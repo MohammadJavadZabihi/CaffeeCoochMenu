@@ -1,14 +1,43 @@
-﻿
+﻿@model CaffeeCoochMenu.Application.DTOs.IndexViewModel
+
 @{
     ViewData["Title"] = "Index";
 }
 
 <!-- Main Content -->
 <main class="container">
-    <div class="menu-grid" id="menu-grid" style="display: none;">
-        <!-- Menu items will be populated here by JavaScript -->
-    </div>
-    <div class="empty-state" id="empty-state" style="display: none;">
-        در این دسته‌بندی محصولی یافت نشد.
+    <!-- دسته‌بندی‌ها -->
+    <nav class="category-tabs">
+        <div class="container">
+            <div class="tabs-container">
+                @foreach (var category in Model.Categories)
+                {
+                    <a href="#" class="tab-button">@category.Name</a>
+                }
+            </div>
+        </div>
+    </nav>
+
+    <!-- آیتم‌های منو -->
+    <div class="menu-grid">
+        @foreach (var item in Model.Products)
+        {
+            <div class="menu-item @(item.IsAvailable ? "" : "opacity-50")">
+                <img src="@item.ImageUrl" alt="@item.Name" />
+                @if (item.IsPopular)
+                {
+                    <div class="popular-badge">محبوب</div>
+                }
+                <div class="menu-item-content">
+                    <h3>@item.Name</h3>
+                    <p>@item.Description</p>
+                    @if (!item.IsAvailable)
+                    {
+                        <div class="text-red-500 text-sm mt-1">موقتاً در دسترس نیست</div>
+                    }
+                    <div class="menu-item-price">@string.Format("{0:N0} تومان", item.Price)</div>
+                </div>
+            </div>
+        }
     </div>
 </main>

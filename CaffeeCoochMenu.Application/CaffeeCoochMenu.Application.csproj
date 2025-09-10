@@ -29,8 +29,4 @@
     <ProjectReference Include="..\CaffeeCoochMenu.Infrastracture\CaffeeCoochMenu.Infrastracture.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="DTOs\" />
-  </ItemGroup>
-
 </Project>

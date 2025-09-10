@@ -1,13 +1,39 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CaffeeCoochMenu.Application.DTOs;
+using CaffeeCoochMenu.Core.Entities;
+using CaffeeCoochMenu.Core.Interfaces;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CaffeeCoochMenu.Web.Controllers
 {
     public class HomeController : Controller
     {
-        [HttpGet]
-        public IActionResult Index()
+        private readonly IProductService _productService;
+        private readonly ICategoryService _categoryService;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        public HomeController(IProductService productService,
+            ICategoryService categoryService,
+            SignInManager<ApplicationUser> signInManager)
         {
-            return View();
+            _productService = productService;
+            _categoryService = categoryService;
+            _signInManager = signInManager;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Index()
+        {
+
+            var prdoucts = await _productService.GetAllProductsAsync();
+            var categories = await _categoryService.GetAllCategoriesAsync();
+
+            var result = new IndexViewModel
+            {
+                Categories = categories,
+                Products = prdoucts
+            };
+
+            return View(result);
         }
 
         [HttpGet("Login")]
@@ -17,8 +43,17 @@ namespace CaffeeCoochMenu.Web.Controllers
         }
 
         [HttpPost("Login")]
-        public IActionResult Login(string name)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(LoginViewModel login)
         {
+            var result = await _signInManager.PasswordSignInAsync(login.UserName,
+                login.Password, true, false);
+            if (result.Succeeded)
+            {
+                return RedirectToAction("Index");
+            }
+
+            ModelState.AddModelError("", "نام کاربری و یا رمز عبور اشتباه است");
             return View();
         }
     }

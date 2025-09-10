@@ -1,0 +1,70 @@
+﻿<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <link rel="stylesheet" href="~/css/admin-dashboard.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="admin-header">
+        <div class="header-content">
+            <div class="logo-section">
+                <span class="cafe-icon">☕</span>
+                <div class="logo-text">
+                    <h1>کافه رؤیا</h1>
+                    <p>پنل مدیریت</p>
+                </div>
+            </div>
+            <div class="admin-actions">
+                <span class="welcome-text">خوش آمدید، @ViewBag.AdminName</span>
+                <button class="mobile-menu-btn" onclick="toggleSidebar()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <form method="post" action="/AdminDashboard/Logout" class="logout-form">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="logout-btn">خروج</button>
+                </form>
+
+                <a href="/" class="logout-btn">بازگشت به سایت</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h3>منوی مدیریت</h3>
+            </div>
+            <ul class="sidebar-menu">
+                <li class="menu-item">
+                    <a href="/Product">
+                        <span class="menu-icon">🍰</span>
+                        <span class="menu-text">مدیریت محصولات</span>
+                    </a>
+                    <a href="/Category">
+                        <span class="menu-icon">📂</span>
+                        <span class="menu-text">مدیریت دسته‌بندی‌ها</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        @RenderBody()
+
+    </div>
+
+    <!-- Success/Error Messages -->
+    @if (ViewBag.Message != null)
+    {
+        <div class="toast-message @(ViewBag.IsSuccess ? "success" : "error")" id="toastMessage">
+            @ViewBag.Message
+        </div>
+    }
+
+    <!-- Modals will be here -->
+    <div id="modalOverlay" class="modal-overlay" onclick="closeModal()"></div>
+
+    <script src="~/js/admin-dashboard.js"></script>
+</body>
+</html>

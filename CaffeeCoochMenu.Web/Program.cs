@@ -6,10 +6,20 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddRepositories();
-// serices which contain business logic
+// services which contain business logic
 builder.Services.AddServices();
 
 var app = builder.Build();
+
+// Add roles
+using (var scope = app.Services.CreateScope())
+{
+    var service = scope.ServiceProvider;
+    await ServiceProviderExtention.RoleSeeder(service);
+}
+
+// Add super admin user
+await app.AddSuperAdmin(builder.Configuration);
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -23,7 +33,13 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
+
+
+app.MapControllerRoute(
+    name: "areas",
+    pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}");
 
 app.MapControllerRoute(
     name: "default",

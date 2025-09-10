@@ -12,7 +12,7 @@ namespace CaffeeCoochMenu.Infrastracture.Persictense.Services
         {
             _context = context;
         }
-        public async Task<IEnumerable<Product?>> GetAllProductsAsync(int pageIndex = 1, int pageSize = 10, string filter = "")
+        public async Task<IEnumerable<Product?>> GetAllProductsAsync(int pageIndex = 0, int pageSize = 10, string filter = "")
         {
             IQueryable<Product> query = _context.Products;
 
@@ -23,9 +23,16 @@ namespace CaffeeCoochMenu.Infrastracture.Persictense.Services
 
             query = query.OrderByDescending(p => p.CreatedAt);
 
-            var result = await query.Skip((pageIndex - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
+            if(pageIndex >= 1)
+            {
+                var indexResult = await query.Skip((pageIndex - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToListAsync();
+
+                return indexResult;
+            }
+
+            var result = await query.ToListAsync();
 
             return result;
         }

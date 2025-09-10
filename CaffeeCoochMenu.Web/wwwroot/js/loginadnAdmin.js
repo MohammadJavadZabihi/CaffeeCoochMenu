@@ -1,6 +1,4 @@
-﻿
-
-// Global Variables
+﻿// Global Variables
 let menuItems = [];
 let categories = [];
 let currentUser = null;
@@ -13,43 +11,9 @@ let editingCategory = null;
 
 // Login Function
 async function login(username, password) {
-    try {
-        showLoading('login-loading');
-
-        // Replace with your actual authentication endpoint
-        const response = await fetch('/api/auth/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ username, password })
-        });
-
-        if (!response.ok) {
-            throw new Error('Invalid credentials');
-        }
-
-        const data = await response.json();
-        currentUser = data.user;
-        localStorage.setItem('adminToken', data.token);
-
-        showPage('admin-page');
-        await loadData();
-
-    } catch (error) {
-        console.error('Login error:', error);
-        showAlert('login-alert', 'نام کاربری یا رمز عبور اشتباه است.', 'error');
-
-        // Demo login for development
-        if (username === 'admin' && password === 'admin') {
-            currentUser = { username: 'admin', name: 'مدیر سیستم' };
-            localStorage.setItem('adminToken', 'demo-token');
-            showPage('admin-page');
-            await loadDemoData();
-        }
-    } finally {
-        hideLoading('login-loading');
-    }
+    localStorage.setItem('adminToken', 'demo-token');
+    showPage('admin-page');
+    await loadDemoData();
 }
 
 // Logout Function
@@ -402,32 +366,32 @@ function renderMenuItems() {
             const categoryName = category ? category.name : 'نامشخص';
 
             return `
-    <tr>
-        <td>
-            <img src="${item.imageUrl || '/images/placeholder.jpg'}" alt="${item.name}"
-                onerror="this.src='/images/placeholder.jpg'">
-        </td>
-        <td>${item.name}</td>
-        <td>${categoryName}</td>
-        <td>${item.formattedPrice || formatPrice(item.price)}</td>
-        <td>
-            <span class="badge ${item.isAvailable ? 'badge-success' : 'badge-destructive'}">
-                ${item.isAvailable ? 'موجود' : 'ناموجود'}
-            </span>
-        </td>
-        <td>
-            <span class="badge ${item.isPopular ? 'badge-success' : 'badge-secondary'}">
-                ${item.isPopular ? 'محبوب' : 'عادی'}
-            </span>
-        </td>
-        <td>
-            <button class="btn btn-secondary" style="margin-left: 0.5rem; padding: 0.25rem 0.5rem; font-size: 0.75rem;"
-                onclick="editMenuItem(${item.id})">ویرایش</button>
-            <button class="btn btn-destructive" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;"
-                onclick="deleteMenuItem(${item.id})">حذف</button>
-        </td>
-    </tr>
-    `;
+                        <tr>
+                            <td>
+                                <img src="${item.imageUrl || '/images/placeholder.jpg'}" alt="${item.name}" 
+                                     onerror="this.src='/images/placeholder.jpg'">
+                            </td>
+                            <td>${item.name}</td>
+                            <td>${categoryName}</td>
+                            <td>${item.formattedPrice || formatPrice(item.price)}</td>
+                            <td>
+                                <span class="badge ${item.isAvailable ? 'badge-success' : 'badge-destructive'}">
+                                    ${item.isAvailable ? 'موجود' : 'ناموجود'}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge ${item.isPopular ? 'badge-success' : 'badge-secondary'}">
+                                    ${item.isPopular ? 'محبوب' : 'عادی'}
+                                </span>
+                            </td>
+                            <td>
+                                <button class="btn btn-secondary" style="margin-left: 0.5rem; padding: 0.25rem 0.5rem; font-size: 0.75rem;" 
+                                        onclick="editMenuItem(${item.id})">ویرایش</button>
+                                <button class="btn btn-destructive" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;" 
+                                        onclick="deleteMenuItem(${item.id})">حذف</button>
+                            </td>
+                        </tr>
+                    `;
         }).join('');
 }
 
@@ -441,18 +405,18 @@ function renderCategories() {
             const itemCount = menuItems.filter(item => item.categoryId === category.id).length;
 
             return `
-    <tr>
-        <td>${category.name}</td>
-        <td>${category.displayOrder || 0}</td>
-        <td>${itemCount} محصول</td>
-        <td>
-            <button class="btn btn-secondary" style="margin-left: 0.5rem; padding: 0.25rem 0.5rem; font-size: 0.75rem;"
-                onclick="editCategory('${category.id}')">ویرایش</button>
-            <button class="btn btn-destructive" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;"
-                onclick="deleteCategory('${category.id}')">حذف</button>
-        </td>
-    </tr>
-    `;
+                        <tr>
+                            <td>${category.name}</td>
+                            <td>${category.displayOrder || 0}</td>
+                            <td>${itemCount} محصول</td>
+                            <td>
+                                <button class="btn btn-secondary" style="margin-left: 0.5rem; padding: 0.25rem 0.5rem; font-size: 0.75rem;" 
+                                        onclick="editCategory('${category.id}')">ویرایش</button>
+                                <button class="btn btn-destructive" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;" 
+                                        onclick="deleteCategory('${category.id}')">حذف</button>
+                            </td>
+                        </tr>
+                    `;
         }).join('');
 }
 
@@ -680,9 +644,9 @@ function clearForms() {
 // Login Form Submit
 document.getElementById('login-form').addEventListener('submit', function (e) {
     e.preventDefault();
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
-    login(username, password);
+    localStorage.setItem('adminToken', 'demo-token');
+    showPage('admin-page');
+    await loadDemoData();
 });
 
 // Product Form Submit
@@ -728,7 +692,9 @@ document.querySelectorAll('.modal').forEach(modal => {
 // INITIALIZATION
 // ===============================================
 
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', async function () {
     initTheme();
-    checkAuth();
+    currentUser = { username: 'admin', name: 'مدیر سیستم' };
+    showPage('admin-page');
+    await loadDemoData();
 });

@@ -1,0 +1,65 @@
+﻿@model List<CaffeeCoochMenu.Core.Entities.Product>
+
+@{
+    ViewData["Title"] = "ProductIndex";
+}
+
+<main class="main-content">
+    <!-- Products Section -->
+    <section id="products-section">
+        <div class="section-header">
+            <h2>مدیریت محصولات</h2>
+            <a class="btn-primary" asp-area="AdminDashboard" asp-controller="Dashboard" asp-action="AddEditProduct">افزودن محصول جدید</a>
+@*             @if (ViewBag.Category != null)
+            {
+                <a class="btn-primary"
+                   href="@Url.Action("Index", "Dashboard", new { area = "AdminDashboard", category = "" })">
+                    همه
+                </a>
+
+                @foreach (var cat in ViewBag.Category)
+                {
+                    <a class="btn-primary"
+                       href="@Url.Action("Index", "Dashboard", new { area = "AdminDashboard", category = cat.CategoryName })">
+                        @cat.CategoryName
+                    </a>
+                }
+
+            } *@
+        </div>
+
+        <div class="products-grid">
+
+            @foreach (var product in Model)
+            {
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="@product.ImageUrl" alt="@product.Name" onerror="this.src='/images/placeholder.jpg'">
+                    </div>
+                    <div class="product-info">
+                        <h4>@product.Name</h4>
+                        <p class="product-category">@product.Description</p>
+                        <p class="product-price">@product.Price تومان</p>
+                        <div class="product-actions">
+                            <a asp-area="AdminDashboard"
+                               asp-controller="Dashboard"
+                               asp-action="EditProduct"
+                               asp-route-id="@product.Id"
+                               class="btn-edit">
+                                ویرایش
+                            </a>
+
+                            <form method="post" asp-controller="Dashboard" asp-action="DeleteProdutc" asp-area="AdminDashboard"
+                                  onsubmit="return confirm('آیا مطمئن هستید می‌خواهید این محصول را حذف کنید؟');">
+                                <input type="hidden" name="Id" value="@product.Id" />
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn-delete">حذف</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </section>
+</main>
+

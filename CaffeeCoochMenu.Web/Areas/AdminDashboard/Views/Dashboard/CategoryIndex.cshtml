@@ -1,0 +1,43 @@
+﻿@model List<CaffeeCoochMenu.Core.Entities.Category>
+
+@{
+    ViewData["Title"] = "CategoryIndex";
+}
+
+<main class="main-content">
+    <!-- Categories Section -->
+    <section id="categories-section">
+        <div class="section-header">
+            <h2>مدیریت دسته‌بندی‌ها</h2>
+            <a class="btn-primary" asp-area="AdminDashboard" asp-controller="Dashboard" asp-action="CreateCategory">افزودن دسته‌بندی جدید</a>
+        </div>
+
+        <div class="products-grid">
+            @foreach (var category in Model)
+            {
+            <div class="product-card">
+                <div class="product-info">
+                    <h4>@category.Name</h4>
+
+                    <div class="product-actions">
+                        <a asp-area="AdminDashboard"
+                           asp-controller="Dashboard"
+                           asp-action="EditCategory"
+                           asp-route-id="@category.Id"
+                           class="btn-edit">
+                            ویرایش
+                        </a>
+
+                        <form method="post" asp-controller="Dashboard" asp-action="DeleteCategory" asp-area="AdminDashboard"
+                              onsubmit="return confirm('آیا مطمئن هستید می‌خواهید این دسته‌بندی را حذف کنید؟');">
+                            <input type="hidden" name="Id" value="@category.Id" />
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn-delete">حذف</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            }
+        </div>
+    </section>
+</main>
