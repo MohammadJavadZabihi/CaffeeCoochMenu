@@ -1,0 +1,39 @@
+﻿
+@{
+    ViewData["Title"] = "ورود";
+    ViewData["HideHeader"] = true;
+}
+
+<!-- Login Page -->
+<div id="login-page" class="page active">
+    <div class="login-page">
+        <div class="login-card">
+            <img class="logo" src="/StaticPic/coochCafeeLogo.png"></img>
+
+            <h2 class="login-title">ورود به پنل مدیریت</h2>
+
+            <div id="login-alert" class="alert alert-error">
+                نام کاربری یا رمز عبور اشتباه است.
+            </div>
+
+            <form id="login-form">
+                <div class="form-group">
+                    <label class="form-label" for="username">نام کاربری:</label>
+                    <input type="text" id="username" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="password">رمز عبور:</label>
+                    <input type="password" id="password" class="form-input" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-full">
+                    <span id="login-loading" class="loading" style="display: none;"></span>
+                    ورود
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+

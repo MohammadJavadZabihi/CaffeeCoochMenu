@@ -1,0 +1,70 @@
+﻿<!DOCTYPE html>
+<html lang="fa" dir="rtl" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>کافه کوچ - منوی آنلاین</title>
+    <meta name="description" content="منوی آنلاین کافه کوچ - بهترین قهوه و نوشیدنی‌های سنتی ایرانی">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="~/css/cofeeCooch.css">
+    <link rel="stylesheet" href="~/css/loginandAdmin.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Vazir:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Theme Toggle Button -->
+    <button class="theme-toggle" onclick="toggleTheme()" title="تغییر تم">
+        <span id="theme-icon">🌙</span>
+    </button>
+
+    @if (!(ViewData["HideHeader"] as bool? ?? false))
+    {
+        <!-- Header -->
+        <header class="header">
+            <div class="container">
+                <div class="header-content">
+                    <!-- Logo SVG -->
+                    <img class="logo" src="/StaticPic/coochCafeeLogo.png" />
+                    <h1>کافه کوچ</h1>
+                    <p>قهوه، چای و طعم‌های اصیل ایرانی</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Error Message -->
+        <div class="container">
+            <div id="error-message" class="error-message">
+                خطا در بارگذاری داده‌ها. لطفاً صفحه را رفرش کنید.
+            </div>
+        </div>
+
+        <!-- Loading -->
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+        </div>
+
+        <!-- Category Tabs -->
+        <nav id="category-tabs" class="category-tabs" style="display: none;">
+            <div class="container">
+                <div id="tabs-container" class="tabs-container">
+                    <!-- Tabs will be populated by JavaScript -->
+                </div>
+            </div>
+        </nav>
+    }
+
+    @RenderBody()
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>© ۱۴۰۳ کافه کوچ. تمامی حقوق محفوظ است.</p>
+            <p class="address">آدرس: تهران، خیابان ولیعصر، کافه کوچ</p>
+        </div>
+    </footer>
+
+    <script src="~/js/coffeCooch.js"></script>
+    <script src="~/js//loginadnAdmin.js"></script>
+</body>
+</html>
