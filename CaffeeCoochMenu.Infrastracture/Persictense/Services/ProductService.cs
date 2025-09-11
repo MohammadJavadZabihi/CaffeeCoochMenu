@@ -16,7 +16,7 @@ namespace CaffeeCoochMenu.Infrastracture.Persictense.Services
         {
             IQueryable<Product> query = _context.Products;
 
-            if(!string.IsNullOrEmpty(filter))
+            if(!string.IsNullOrEmpty(filter) && filter != "all")
             {
                 query = query.Where(p => p.CategoryName == filter);
             }

@@ -20,11 +20,11 @@ namespace CaffeeCoochMenu.Web.Controllers
             _signInManager = signInManager;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Index()
+        [HttpGet("{category?}")]
+        public async Task<IActionResult> Index(string category = "")
         {
 
-            var prdoucts = await _productService.GetAllProductsAsync();
+            var prdoucts = await _productService.GetAllProductsAsync(filter: category);
             var categories = await _categoryService.GetAllCategoriesAsync();
 
             var result = new IndexViewModel

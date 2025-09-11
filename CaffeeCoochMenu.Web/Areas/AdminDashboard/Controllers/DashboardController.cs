@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 namespace CaffeeCoochMenu.Web.Areas.AdminDashboard.Controllers
 {
     [Area("AdminDashboard")]
+    [Route("AdminDashboard")]
     [Authorize(Roles = "SuperAdmin")]
     public class DashboardController : Controller
     {
@@ -18,16 +19,17 @@ namespace CaffeeCoochMenu.Web.Areas.AdminDashboard.Controllers
             _categoryService = categoryService;
         }
 
-        public async Task<IActionResult> Index()
+        [HttpGet]
+        public async Task<IActionResult> Index(string filter = "all")
         {
-            var products = await _productService.GetAllProductsAsync();
+            var products = await _productService.GetAllProductsAsync(filter: filter);
             return View(products);
         }
 
-        [HttpGet("Product")]
-        public async Task<IActionResult> ProductIndex()
+        [HttpGet("Product/{filter?}")]
+        public async Task<IActionResult> ProductIndex(string filter = "all")
         {
-            var products = await _productService.GetAllProductsAsync();
+            var products = await _productService.GetAllProductsAsync(filter: filter);
             return View(products);
         }
 

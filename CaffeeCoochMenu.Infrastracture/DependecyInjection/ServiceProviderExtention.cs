@@ -53,6 +53,7 @@ namespace CaffeeCoochMenu.Infrastracture.DependecyInjection
         {
             services.AddTransient<IProductService, ProductService>();
             services.AddTransient<ICategoryService, CategoryService>();
+            services.AddTransient<IValidationImageUploadService, ValidationImageUploadService>();
         }
 
         public static async Task AddSuperAdmin(this IApplicationBuilder application,

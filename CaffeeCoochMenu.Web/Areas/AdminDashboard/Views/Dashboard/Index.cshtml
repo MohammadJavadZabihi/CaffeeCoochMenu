@@ -1,38 +1,48 @@
 ﻿@model List<CaffeeCoochMenu.Core.Entities.Product>
-
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "محصولات";
 }
 
-
-<!-- Main Content -->
 <main class="main-content">
-    <!-- Products Section -->
     <section id="products-section" class="content-section">
         <div class="section-header">
             <h2>مدیریت محصولات</h2>
-            <a class="btn-primary" asp-area="AdminDashboard" asp-controller="Dashboard" asp-action="AddEditProduct">افزودن محصول جدید</a>
+            <a class="btn-primary" asp-area="AdminDashboard" asp-controller="Produc" asp-action="AddProduct">افزودن محصول جدید</a>
+
+            <!-- Search Bar -->
+            <form method="get" asp-area="AdminDashboard" asp-controller="Dashboard" asp-action="Index" class="search-form">
+                <input type="text" name="searchTerm" placeholder="جستجو محصولات..." value="@ViewBag.CurrentSearch" />
+                <button type="submit">جستجو</button>
+            </form>
+
+            <!-- Category Filter -->
             @if (ViewBag.Category != null)
             {
-                <a class="btn-primary"
-                   href="@Url.Action("Index", "Dashboard", new { area = "AdminDashboard", category = "" })">
-                    همه
-                </a>
-
+                <a class="btn-primary" href="@Url.Action("Index", "Dashboard", new { area = "AdminDashboard", category = "" })">همه</a>
                 @foreach (var cat in ViewBag.Category)
                 {
-                    <a class="btn-primary"
-                       href="@Url.Action("Index", "Dashboard", new { area = "AdminDashboard", category = cat.CategoryName })">
+                    <a class="btn-primary" href="@Url.Action("Index", "Dashboard", new { area = "AdminDashboard", category = cat.CategoryName })">
                         @cat.CategoryName
                     </a>
                 }
-
             }
         </div>
 
+        <!-- Success Message -->
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert-success">
+                @TempData["SuccessMessage"]
+            </div>
+        }
+        else if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert-error">
+                @TempData["ErrorMessage"]
+            </div>
+        }
+
         <div class="products-grid">
-
-
             @foreach (var product in Model)
             {
                 <div class="product-card">
@@ -44,15 +54,9 @@
                         <p class="product-category">@product.Description</p>
                         <p class="product-price">@product.Price تومان</p>
                         <div class="product-actions">
-                            <a asp-area="AdminDashboard"
-                               asp-controller="Dashboard"
-                               asp-action="EditProduct"
-                               asp-route-id="@product.Id"
-                               class="btn-edit">
-                                ویرایش
-                            </a>
+                            <a asp-area="AdminDashboard" asp-controller="Produc" asp-action="EditProduct" asp-route-id="@product.Id" class="btn-edit">ویرایش</a>
 
-                            <form method="post" asp-controller="Dashboard" asp-action="DeleteProdutc" asp-area="AdminDashboard"
+                            <form method="post" asp-controller="Produc" asp-action="DeleteProduct" asp-area="AdminDashboard"
                                   onsubmit="return confirm('آیا مطمئن هستید می‌خواهید این محصول را حذف کنید؟');">
                                 <input type="hidden" name="Id" value="@product.Id" />
                                 @Html.AntiForgeryToken()

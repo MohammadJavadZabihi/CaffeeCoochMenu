@@ -1,0 +1,301 @@
+﻿@model CaffeeCoochMenu.Application.DTOs.AddProductViewModel
+
+@{
+    ViewData["Title"] = "AddProduct";
+}
+
+
+<div class="form-container">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb">
+        <a href="/AdminDashboard">پنل مدیریت</a>
+        <span class="separator">←</span>
+        <a href="/AdminDashboard#products">محصولات</a>
+        <span class="separator">←</span>
+        <span class="current">@ViewBag.PageTitle</span>
+    </nav>
+
+    <!-- Form Card -->
+    <div class="form-card">
+        <div class="form-header">
+            <div class="header-content-form">
+                <h2>@ViewBag.PageTitle</h2>
+                <p class="form-subtitle">
+                    @if (ViewBag.IsEdit == true)
+                    {
+                        <text>ویرایش اطلاعات محصول موجود</text>
+                    }
+                    else
+                    {
+                        <text>افزودن محصول جدید به منوی کافه</text>
+                    }
+                </p>
+            </div>
+            <div class="form-icon">
+                @if (ViewBag.IsEdit == true)
+                {
+                    <span>✏️</span>
+                }
+                else
+                {
+                    <span>➕</span>
+                }
+            </div>
+        </div>
+
+        <!-- Form -->
+        <form method="post" asp-controller="Produc" asp-action="AddProduct" enctype="multipart/form-data">
+
+            @Html.AntiForgeryToken()
+
+            @if (ViewBag.IsEdit == true)
+            {
+                <input type="hidden" name="Id" value="@ViewBag.Product?.Id" />
+            }
+
+            <div class="form-grid">
+                <!-- Product Name -->
+                <div class="form-group full-width">
+                    <label for="Name" class="form-label required">نام محصول</label>
+                    <input asp-for="ProductName" type="text"
+                           id="ProductName"
+                           name="ProductName"
+                           value="@ViewBag.Product?.Name"
+                           class="form-input"
+                           placeholder="مثال: اسپرسو مخصوص"
+                           required
+                           maxlength="100">
+                    <div class="input-hint">نام محصول باید واضح و جذاب باشد</div>
+                </div>
+
+                <!-- Category -->
+                <!-- Price -->
+                <div class="form-group">
+                    <label for="Price" class="form-label required">قیمت (تومان)</label>
+                    <div class="input-with-icon">
+                        <input asp-for="Price" type="number" class="form-input" placeholder="0" required />
+                        <span class="input-icon">💰</span>
+                    </div>
+                    <div class="price-preview" id="pricePreview"></div>
+                </div>
+
+                <!-- Description -->
+                <div class="form-group full-width">
+                    <label for="Description" class="form-label required">توضیحات</label>
+                    <textarea asp-for="Description" id="Description"
+                              name="Description"
+                              class="form-textarea"
+                              placeholder="توضیح کاملی از محصول، مواد اولیه، طعم و ویژگی‌های خاص..."
+                              rows="4"
+                              maxlength="500"
+                              required>@ViewBag.Product?.Description</textarea>
+                    <div class="char-counter">
+                        <span id="charCount">0</span> / 500 کاراکتر
+                    </div>
+                </div>
+
+                <!-- Category Dropdown -->
+                <div class="form-group full-width">
+                    <label for="Category" class="form-label required">دسته‌بندی محصول</label>
+                    <select asp-for="CategoryName"
+                            id="CategoryName"
+                            name="CategoryName"
+                            class="form-input"
+                            required>
+                        <option value="">انتخاب دسته‌بندی</option>
+
+                        @if (ViewBag.Category != null)
+                        {
+                            @foreach (var cat in ViewBag.Category)
+                            {
+                                <option value="@cat.Name">@cat.Name</option>
+                            }
+                        }
+
+                    </select>
+                    <div class="input-hint">لطفاً دسته‌بندی مناسب برای محصول انتخاب کنید</div>
+                </div>
+
+                <!-- Image Upload -->
+                <div class="form-group full-width">
+                    <label for="ImageFile" class="form-label">تصویر محصول</label>
+                    <div class="image-upload-container">
+                        <div class="image-preview" id="imagePreview">
+                            @if (ViewBag.IsEdit == true && !string.IsNullOrEmpty(ViewBag.Product?.ImageUrl))
+                            {
+                                <img src="@ViewBag.Product.ImageUrl" alt="Current Image" class="current-image">
+                                <div class="image-overlay">
+                                    <span>کلیک برای تغییر تصویر</span>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="upload-placeholder">
+                                    <span class="upload-icon">📸</span>
+                                    <span class="upload-text">کلیک یا فایل را اینجا بکشید</span>
+                                    <span class="upload-hint">فرمت‌های مجاز: JPG, PNG, WEBP (حداکثر 5MB)</span>
+                                </div>
+                            }
+                        </div>
+                        <input asp-for="Image" type="file"
+                               id="Image"
+                               name="Image"
+                               accept="image/*"
+                               class="file-input">
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+                <div class="action-buttons">
+                    <button type="submit" class="btn-submit" id="submitBtn">
+                        <span class="btn-icon">
+                            @if (ViewBag.IsEdit == true)
+                            {
+                                <text>💾</text>
+                            }
+                            else
+                            {
+                                <text>✅</text>
+                            }
+                        </span>
+                        <span class="btn-text">
+                            @if (ViewBag.IsEdit == true)
+                            {
+                                <text>ذخیره تغییرات</text>
+                            }
+                            else
+                            {
+                                <text>افزودن محصول</text>
+                            }
+                        </span>
+                    </button>
+
+                    <a href="/AdminDashboard#products" class="btn-cancel">
+                        <span class="btn-icon">❌</span>
+                        <span class="btn-text">لغو</span>
+                    </a>
+                </div>
+
+                <div class="save-reminder">
+                    <span class="reminder-icon">💡</span>
+                    <span class="reminder-text">تغییرات خودکار ذخیره نمی‌شود</span>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Quick Help -->
+    <div class="help-card">
+        <h3>راهنمای سریع</h3>
+        <div class="help-items">
+            <div class="help-item">
+                <span class="help-icon">📝</span>
+                <div class="help-content">
+                    <strong>نام محصول:</strong>
+                    <p>نامی جذاب و توصیفی انتخاب کنید</p>
+                </div>
+            </div>
+            <div class="help-item">
+                <span class="help-icon">💰</span>
+                <div class="help-content">
+                    <strong>قیمت‌گذاری:</strong>
+                    <p>قیمت را با توجه به مواد اولیه و رقبا تعیین کنید</p>
+                </div>
+            </div>
+            <div class="help-item">
+                <span class="help-icon">📸</span>
+                <div class="help-content">
+                    <strong>تصویر:</strong>
+                    <p>تصویر با کیفیت بالا و نورپردازی مناسب انتخاب کنید</p>
+                </div>
+            </div>
+            <div class="help-item">
+                <span class="help-icon">🏷️</span>
+                <div class="help-content">
+                    <strong>برچسب‌ها:</strong>
+                    <p>مواد اولیه و ویژگی‌های خاص را اضافه کنید</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Success/Error Messages -->
+@if (ViewBag.Message != null)
+{
+    <div class="toast-message @(ViewBag.IsSuccess ? "success" : "error")" id="toastMessage">
+        @ViewBag.Message
+    </div>
+}
+
+<!-- Preview Modal -->
+<div id="previewModal" class="modal-overlay">
+    <div class="modal-content preview-modal">
+        <div class="modal-header">
+            <h3>پیش‌نمایش محصول</h3>
+            <button class="modal-close" onclick="closePreview()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="product-preview-card">
+                <div class="product-preview-image">
+                    <img id="previewImage" src="" alt="Product Preview">
+                </div>
+                <div class="product-preview-info">
+                    <h4 id="previewName"></h4>
+                    <p class="preview-category" id="previewCategory"></p>
+                    <p class="preview-description" id="previewDescription"></p>
+                    <div class="preview-price" id="previewPrice"></div>
+                    <div class="preview-tags" id="previewTags"></div>
+                    <div class="preview-meta">
+                        <span class="prep-time" id="previewPrepTime"></span>
+                        <span class="availability" id="previewAvailability"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    const fileInput = document.getElementById('Image');
+    const imagePreview = document.getElementById('imagePreview');
+
+    fileInput.addEventListener('change', function() {
+        const file = this.files[0];
+
+        if (file) {
+            const reader = new FileReader();
+
+            reader.addEventListener('load', function() {
+                // پاک کردن محتوای قبلی
+                imagePreview.innerHTML = '';
+
+                // ساخت تصویر جدید
+                const img = document.createElement('img');
+                img.src = reader.result;
+                img.classList.add('current-image');
+
+                // اضافه کردن overlay
+                const overlay = document.createElement('div');
+                overlay.classList.add('image-overlay');
+                overlay.innerHTML = '<span>کلیک برای تغییر تصویر</span>';
+
+                imagePreview.appendChild(img);
+                imagePreview.appendChild(overlay);
+            });
+
+            reader.readAsDataURL(file);
+        } else {
+            // اگر فایل حذف شد، دوباره placeholder نمایش داده شود
+            imagePreview.innerHTML = `
+                <div class="upload-placeholder">
+                    <span class="upload-icon">📸</span>
+                    <span class="upload-text">کلیک یا فایل را اینجا بکشید</span>
+                    <span class="upload-hint">فرمت‌های مجاز: JPG, PNG, WEBP (حداکثر 5MB)</span>
+                </div>
+            `;
+        }
+    });
+</script>
