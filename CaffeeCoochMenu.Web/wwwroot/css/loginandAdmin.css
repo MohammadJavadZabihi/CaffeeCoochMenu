@@ -4,7 +4,9 @@
     padding: 0;
     box-sizing: border-box;
 }
-
+a {
+    text-decoration: none;
+}
 :root {
     --background: hsl(35, 25%, 96%);
     --foreground: hsl(25, 20%, 15%);

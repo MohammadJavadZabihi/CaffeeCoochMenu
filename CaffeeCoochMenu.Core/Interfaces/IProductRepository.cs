@@ -6,6 +6,6 @@ namespace CaffeeCoochMenu.Core.Interfaces
     {
         Task AddProductAsyc(Product product);
         Task<bool> DeleteProductAsyc(Product product);
-        Task<bool> UpdateProductAsync(Product product);
+        Task<bool> UpdateProductAsync(int id, Product product);
     }
 }

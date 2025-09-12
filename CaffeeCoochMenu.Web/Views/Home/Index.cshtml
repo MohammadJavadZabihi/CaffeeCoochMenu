@@ -10,9 +10,10 @@
     <nav class="category-tabs">
         <div class="container">
             <div class="tabs-container">
+                <a href="/" class="tab-button">همه</a>
                 @foreach (var category in Model.Categories)
                 {
-                    <a href="#" class="tab-button">@category.Name</a>
+                    <a href="/@category.Name" class="tab-button">@category.Name</a>
                 }
             </div>
         </div>

@@ -9,8 +9,21 @@
     <section id="categories-section">
         <div class="section-header">
             <h2>مدیریت دسته‌بندی‌ها</h2>
-            <a class="btn-primary" asp-area="AdminDashboard" asp-controller="Dashboard" asp-action="CreateCategory">افزودن دسته‌بندی جدید</a>
+            <a class="btn-primary" asp-area="AdminDashboard" asp-controller="Category" asp-action="AddCategory">افزودن دسته‌بندی جدید</a>
         </div>
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert-success">
+                @TempData["SuccessMessage"]
+            </div>
+        }
+        else if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert-error">
+                @TempData["ErrorMessage"]
+            </div>
+        }
 
         <div class="products-grid">
             @foreach (var category in Model)
@@ -28,7 +41,7 @@
                             ویرایش
                         </a>
 
-                        <form method="post" asp-controller="Dashboard" asp-action="DeleteCategory" asp-area="AdminDashboard"
+                            <form method="post" asp-controller="Category" asp-action="DeleteCategory" asp-area="AdminDashboard"
                               onsubmit="return confirm('آیا مطمئن هستید می‌خواهید این دسته‌بندی را حذف کنید؟');">
                             <input type="hidden" name="Id" value="@category.Id" />
                             @Html.AntiForgeryToken()

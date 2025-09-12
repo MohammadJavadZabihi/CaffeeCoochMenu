@@ -1,0 +1,106 @@
+﻿@model CaffeeCoochMenu.Application.DTOs.AddCategoryViewModel
+
+@{
+    ViewData["Title"] = "AddCategory";
+}
+
+
+<div class="form-container">
+    <!-- Form Card -->
+    <div class="form-card">
+        <div class="form-header">
+            <div class="header-content-form">
+                <h2>@ViewBag.PageTitle</h2>
+                <p class="form-subtitle">
+                    <text>افزودن دسته بندی جدید به منوی کافه</text>
+                </p>
+            </div>
+            <div class="form-icon">
+                <span>➕</span>
+
+            </div>
+        </div>
+
+        <!-- Form -->
+        <form method="post" asp-area="AdminDashboard" asp-controller="Category" asp-action="AddCategory">
+            @Html.AntiForgeryToken()
+            <div class="form-grid">
+                <div class="form-group full-width">
+                    <label asp-for="CategoryName" class="form-label required">نام دسته بندی</label>
+                    <input asp-for="CategoryName" type="text"
+                           id="CategoryName"
+                           name="CategoryName"
+                           class="form-input"
+                           placeholder="مثال: قهوه"
+                           required
+                           maxlength="100">
+                    <div class="input-hint">دسته بندی باید واضح باشد</div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <div class="action-buttons">
+                    <button type="submit" class="btn-submit" id="submitBtn">
+                        <span class="btn-icon">✅</span>
+                        <span class="btn-text">افزودن دسته بندی</span>
+                    </button>
+
+                    <a href="/AdminDashboard#products" class="btn-cancel">
+                        <span class="btn-icon">❌</span>
+                        <span class="btn-text">لغو</span>
+                    </a>
+                </div>
+
+                <div class="save-reminder">
+                    <span class="reminder-icon">💡</span>
+                    <span class="reminder-text">تغییرات خودکار ذخیره نمی‌شود</span>
+                </div>
+            </div>
+        </form>
+
+    </div>
+
+    <!-- Quick Help -->
+    <div class="help-card">
+        <h3>راهنمای سریع</h3>
+        <div class="help-items">
+            <div class="help-item">
+                <span class="help-icon">📝</span>
+                <div class="help-content">
+                    <strong>نام محصول:</strong>
+                    <p>نامی جذاب و توصیفی انتخاب کنید</p>
+                </div>
+            </div>
+            <div class="help-item">
+                <span class="help-icon">💰</span>
+                <div class="help-content">
+                    <strong>قیمت‌گذاری:</strong>
+                    <p>قیمت را با توجه به مواد اولیه و رقبا تعیین کنید</p>
+                </div>
+            </div>
+            <div class="help-item">
+                <span class="help-icon">📸</span>
+                <div class="help-content">
+                    <strong>تصویر:</strong>
+                    <p>تصویر با کیفیت بالا و نورپردازی مناسب انتخاب کنید</p>
+                </div>
+            </div>
+            <div class="help-item">
+                <span class="help-icon">🏷️</span>
+                <div class="help-content">
+                    <strong>برچسب‌ها:</strong>
+                    <p>مواد اولیه و ویژگی‌های خاص را اضافه کنید</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Success/Error Messages -->
+@if (ViewBag.Message != null)
+{
+    <div class="toast-message @(ViewBag.IsSuccess ? "success" : "error")" id="toastMessage">
+        @ViewBag.Message
+    </div>
+}

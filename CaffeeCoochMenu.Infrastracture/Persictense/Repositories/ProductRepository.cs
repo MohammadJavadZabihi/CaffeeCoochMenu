@@ -2,6 +2,7 @@
 using CaffeeCoochMenu.Core.Exceptions;
 using CaffeeCoochMenu.Core.Interfaces;
 using CaffeeCoochMenu.Infrastracture.Persictense.Context;
+using Microsoft.EntityFrameworkCore;
 
 namespace CaffeeCoochMenu.Infrastracture.Persictense.Repositories
 {
@@ -34,11 +35,21 @@ namespace CaffeeCoochMenu.Infrastracture.Persictense.Repositories
             }
         }
 
-        public async Task<bool> UpdateProductAsync(Product product)
+        public async Task<bool> UpdateProductAsync(int id, Product product)
         {
             try
             {
-                _context.Products.Update(product);
+                var exixstProduct = await _context.Products.FirstOrDefaultAsync(p => p.Id == id);
+
+                exixstProduct.IsPopular = product.IsPopular;
+                exixstProduct.IsAvailable = product.IsAvailable;
+                exixstProduct.Name = product.Name;
+                exixstProduct.Description = product.Description;
+                exixstProduct.Price = product.Price;
+                exixstProduct.CategoryName = product.CategoryName;
+                exixstProduct.ImageUrl = product.ImageUrl;
+
+                _context.Products.Update(exixstProduct);
                 await _context.SaveChangesAsync();
 
                 return true;
