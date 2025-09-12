@@ -34,4 +34,8 @@
     <ProjectReference Include="..\CaffeeCoochMenu.Infrastracture\CaffeeCoochMenu.Infrastracture.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\Uploads\" />
+  </ItemGroup>
+
 </Project>

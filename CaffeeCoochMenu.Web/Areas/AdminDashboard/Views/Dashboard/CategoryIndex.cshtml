@@ -33,14 +33,6 @@
                     <h4>@category.Name</h4>
 
                     <div class="product-actions">
-                        <a asp-area="AdminDashboard"
-                           asp-controller="Dashboard"
-                           asp-action="EditCategory"
-                           asp-route-id="@category.Id"
-                           class="btn-edit">
-                            ویرایش
-                        </a>
-
                             <form method="post" asp-controller="Category" asp-action="DeleteCategory" asp-area="AdminDashboard"
                               onsubmit="return confirm('آیا مطمئن هستید می‌خواهید این دسته‌بندی را حذف کنید؟');">
                             <input type="hidden" name="Id" value="@category.Id" />

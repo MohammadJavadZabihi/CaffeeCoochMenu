@@ -24,7 +24,7 @@ namespace CaffeeCoochMenu.Web.Controllers
         public async Task<IActionResult> Index(string category = "")
         {
 
-            var prdoucts = await _productService.GetAllProductsAsync(filter: category);
+            var prdoucts = await _productService.GetAllProductsAsync(category: category);
             var categories = await _categoryService.GetAllCategoriesAsync();
 
             var result = new IndexViewModel

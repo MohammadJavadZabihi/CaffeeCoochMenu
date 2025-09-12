@@ -12,15 +12,21 @@ namespace CaffeeCoochMenu.Infrastracture.Persictense.Services
         {
             _context = context;
         }
-        public async Task<IEnumerable<Product?>> GetAllProductsAsync(int pageIndex = 0, int pageSize = 10, string filter = "")
+        public async Task<IEnumerable<Product?>> GetAllProductsAsync(int pageIndex = 0, int pageSize = 10,
+            string filter = "", string category = "")
         {
             IQueryable<Product> query = _context.Products;
 
-            if(!string.IsNullOrEmpty(filter) && filter != "all")
+            if(!string.IsNullOrEmpty(category))
             {
-                query = query.Where(p => p.CategoryName == filter);
+                query = query.Where(p => p.CategoryName == category);
             }
 
+            if (!string.IsNullOrEmpty(filter) && filter != "all")
+            {
+                query = query.Where(p => p.Name.Contains(filter)
+                || p.CategoryName.Contains(filter));
+            }
             query = query.OrderByDescending(p => p.CreatedAt);
 
             if(pageIndex >= 1)

@@ -11,12 +11,17 @@
             <h2>مدیریت محصولات</h2>
             <a class="btn-primary" asp-area="AdminDashboard" asp-controller="Produc" asp-action="AddProduct">افزودن محصول جدید</a>
 
-            <!-- Search Bar -->
-            <form method="get" asp-area="AdminDashboard" asp-controller="Dashboard" asp-action="Index" class="search-form">
-                <input type="text" name="searchTerm" placeholder="جستجو محصولات..." value="@ViewBag.CurrentSearch" />
-                <button type="submit">جستجو</button>
+            <form method="get" asp-area="AdminDashboard" asp-controller="Dashboard" asp-action="ProductIndex" class="search-form">
+                <label for="Name" class="form-label required">نام محصول</label>
+                <input type="text"
+                       id="ProductName"
+                       name="filter"
+                       value="@Context.Request.Query["filter"]"
+                       class="form-input"
+                       placeholder="مثال: اسپرسو مخصوص"
+                       maxlength="100" />
+                <button type="submit" class="btn-submit" id="submitBtn">جستجو</button>
             </form>
-
         </div>
 
         @if (TempData["SuccessMessage"] != null)

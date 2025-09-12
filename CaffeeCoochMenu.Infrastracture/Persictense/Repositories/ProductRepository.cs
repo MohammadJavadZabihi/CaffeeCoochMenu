@@ -23,15 +23,24 @@ namespace CaffeeCoochMenu.Infrastracture.Persictense.Repositories
         {
             try
             {
+                if (!string.IsNullOrEmpty(product.ImageUrl))
+                {
+                    var webRootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+                    var oldFilePath = Path.Combine(webRootPath, product.ImageUrl.TrimStart('/'));
+                    if (File.Exists(oldFilePath))
+                    {
+                        File.Delete(oldFilePath);
+                    }
+                }
+
                 _context.Products.Remove(product);
                 await _context.SaveChangesAsync();
 
                 return true;
             }
-            catch(CustomeException)
+            catch (CustomeException)
             {
-                throw new CustomeException("حذف کالای مورد نظر با مشکل مواجه شد، " +
-                    "لطفا بعدا دوباره تلاش فرمایید");
+                throw new CustomeException("حذف کالای مورد نظر با مشکل مواجه شد، لطفا بعدا دوباره تلاش فرمایید");
             }
         }
 
@@ -39,25 +48,39 @@ namespace CaffeeCoochMenu.Infrastracture.Persictense.Repositories
         {
             try
             {
-                var exixstProduct = await _context.Products.FirstOrDefaultAsync(p => p.Id == id);
+                var existProduct = await _context.Products.FirstOrDefaultAsync(p => p.Id == id);
 
-                exixstProduct.IsPopular = product.IsPopular;
-                exixstProduct.IsAvailable = product.IsAvailable;
-                exixstProduct.Name = product.Name;
-                exixstProduct.Description = product.Description;
-                exixstProduct.Price = product.Price;
-                exixstProduct.CategoryName = product.CategoryName;
-                exixstProduct.ImageUrl = product.ImageUrl;
+                if (existProduct == null) return false;
 
-                _context.Products.Update(exixstProduct);
+                existProduct.IsPopular = product.IsPopular;
+                existProduct.IsAvailable = product.IsAvailable;
+                existProduct.Name = product.Name;
+                existProduct.Description = product.Description;
+                existProduct.Price = product.Price;
+
+                if (!string.IsNullOrEmpty(product.ImageUrl))
+                {
+                    if (!string.IsNullOrEmpty(existProduct.ImageUrl))
+                    {
+                        var webRootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+                        var oldFilePath = Path.Combine(webRootPath, existProduct.ImageUrl.TrimStart('/'));
+                        if (File.Exists(oldFilePath))
+                        {
+                            File.Delete(oldFilePath);
+                        }
+                    }
+
+                    existProduct.ImageUrl = product.ImageUrl;
+                }
+
+                _context.Products.Update(existProduct);
                 await _context.SaveChangesAsync();
 
                 return true;
             }
-            catch(CustomeException)
+            catch (CustomeException)
             {
-                throw new CustomeException("به روز رسانی کالای مورد نظر با مشکل مواجه شد، " +
-    "لطفا بعدا دوباره تلاش فرمایید");
+                throw new CustomeException("به روز رسانی کالای مورد نظر با مشکل مواجه شد، لطفا بعدا دوباره تلاش فرمایید");
             }
         }
     }

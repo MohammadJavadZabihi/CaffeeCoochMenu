@@ -1,11 +1,8 @@
-﻿using Azure.Core;
-using CaffeeCoochMenu.Application.DTOs;
+﻿using CaffeeCoochMenu.Application.DTOs;
 using CaffeeCoochMenu.Core.Entities;
 using CaffeeCoochMenu.Core.Interfaces;
-using CaffeeCoochMenu.Infrastracture.Persictense.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace CaffeeCoochMenu.Web.Areas.AdminDashboard.Controllers
 {
