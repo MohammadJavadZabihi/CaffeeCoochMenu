@@ -22,7 +22,7 @@
         </div>
 
         <!-- Form -->
-        <form method="post" asp-area="AdminDashboard" asp-controller="Category" asp-action="AddCategory">
+        <form method="post" asp-area="AdminDashboard" asp-controller="Category" asp-action="AddCategory" enctype="multipart/form-data">
             @Html.AntiForgeryToken()
             <div class="form-grid">
                 <div class="form-group full-width">
@@ -35,6 +35,25 @@
                            required
                            maxlength="100">
                     <div class="input-hint">دسته بندی باید واضح باشد</div>
+                </div>
+            </div>
+
+            <!-- Image Upload -->
+            <div class="form-group full-width">
+                <label for="ImageFile" class="form-label">تصویر محصول</label>
+                <div class="image-upload-container">
+                    <div class="image-preview" id="imagePreview">
+                        <div class="upload-placeholder">
+                            <span class="upload-icon">📸</span>
+                            <span class="upload-text">کلیک یا فایل را اینجا بکشید</span>
+                            <span class="upload-hint">فرمت‌های مجاز: JPG, PNG, WEBP (حداکثر 5MB)</span>
+                        </div>
+                    </div>
+                    <input asp-for="Image" type="file"
+                           id="Image"
+                           name="Image"
+                           accept="image/*"
+                           class="file-input">
                 </div>
             </div>
 
@@ -104,3 +123,44 @@
         @ViewBag.Message
     </div>
 }
+<script>
+    const fileInput = document.getElementById('Image');
+    const imagePreview = document.getElementById('imagePreview');
+
+    fileInput.addEventListener('change', function() {
+        const file = this.files[0];
+
+        if (file) {
+            const reader = new FileReader();
+
+            reader.addEventListener('load', function() {
+                // پاک کردن محتوای قبلی
+                imagePreview.innerHTML = '';
+
+                // ساخت تصویر جدید
+                const img = document.createElement('img');
+                img.src = reader.result;
+                img.classList.add('current-image');
+
+                // اضافه کردن overlay
+                const overlay = document.createElement('div');
+                overlay.classList.add('image-overlay');
+                overlay.innerHTML = '<span>کلیک برای تغییر تصویر</span>';
+
+                imagePreview.appendChild(img);
+                imagePreview.appendChild(overlay);
+            });
+
+            reader.readAsDataURL(file);
+        } else {
+            // اگر فایل حذف شد، دوباره placeholder نمایش داده شود
+            imagePreview.innerHTML = `
+                <div class="upload-placeholder">
+                    <span class="upload-icon">📸</span>
+                    <span class="upload-text">کلیک یا فایل را اینجا بکشید</span>
+                    <span class="upload-hint">فرمت‌های مجاز: JPG, PNG, WEBP (حداکثر 5MB)</span>
+                </div>
+            `;
+        }
+    });
+</script>

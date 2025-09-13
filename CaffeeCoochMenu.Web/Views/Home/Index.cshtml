@@ -2,43 +2,63 @@
 
 @{
     ViewData["Title"] = "Index";
+    var currentCategory = Model.CurrentCategory ?? "";
 }
+
+<!-- دسته‌بندی‌ها -->
+<nav class="category-tabs">
+    <div class="container">
+        <div class="tabs-container">
+            <a href="/" class="tab-button @(string.IsNullOrEmpty(currentCategory) ? "active" : "")">
+                <img src="/UploadsCategory/default.jpg" alt="همه" class="category-icon" />
+                <span>همه</span>
+            </a>
+            @foreach (var category in Model.Categories)
+            {
+                <a href="/@category.Name" class="tab-button @(currentCategory.Equals(category.Name, StringComparison.OrdinalIgnoreCase) ? "active" : "")">
+                    <img src="@category.ImageUrl" alt="@category.Name" class="category-icon"
+                         onerror="this.src='/UploadsCategory/default.jpg'" />
+                    <span>@category.Name</span>
+                </a>
+            }
+        </div>
+    </div>
+</nav>
+
 
 <!-- Main Content -->
 <main class="container">
-    <!-- دسته‌بندی‌ها -->
-    <nav class ="category-tabs">
-        <div class="container">
-            <div class="tabs-container">
-                <a href="/" class="tab-button">همه</a>
-                @foreach (var category in Model.Categories)
-                {
-                    <a href="/@category.Name" class="tab-button">@category.Name</a>
-                }
-            </div>
-        </div>
-    </nav>
-
     <!-- آیتم‌های منو -->
     <div class="menu-grid">
         @foreach (var item in Model.Products)
         {
             <div class="menu-item @(item.IsAvailable ? "" : "opacity-50")">
-                <img src="@item.ImageUrl" alt="@item.Name" />
-                @if (item.IsPopular)
-                {
-                    <div class="popular-badge">محبوب</div>
-                }
+                <div class="menu-item-image-container">
+                    <img src="@item.ImageUrl" alt="@item.Name"
+                         onerror="this.src='/images/products/placeholder.jpg'" />
+                    @if (item.IsPopular)
+                    {
+                        <div class="popular-badge">محبوب</div>
+                    }
+                </div>
                 <div class="menu-item-content">
                     <h3>@item.Name</h3>
                     <p>@item.Description</p>
                     @if (!item.IsAvailable)
                     {
-                        <div class="text-red-500 text-sm mt-1">موقتاً در دسترس نیست</div>
+                        <div class="text-red-500">موقتاً در دسترس نیست</div>
                     }
                     <div class="menu-item-price">@string.Format("{0:N0} تومان", item.Price)</div>
                 </div>
             </div>
         }
     </div>
+
+    <!-- Empty State -->
+    @if (!Model.Products.Any())
+    {
+        <div class="empty-state">
+            <p>هیچ محصولی در این دسته‌بندی وجود ندارد.</p>
+        </div>
+    }
 </main>

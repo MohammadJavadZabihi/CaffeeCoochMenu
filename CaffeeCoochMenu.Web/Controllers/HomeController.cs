@@ -30,9 +30,10 @@ namespace CaffeeCoochMenu.Web.Controllers
             var result = new IndexViewModel
             {
                 Categories = categories,
-                Products = prdoucts
+                Products = prdoucts,
+                CurrentCategory = string.IsNullOrEmpty(category) ? "" : category
             };
-
+            ViewBag.CurrentCategory = string.IsNullOrEmpty(category) ? "" : category;
             return View(result);
         }
 

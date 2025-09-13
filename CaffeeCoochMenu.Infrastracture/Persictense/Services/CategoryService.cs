@@ -1,6 +1,7 @@
 ﻿using CaffeeCoochMenu.Core.Entities;
 using CaffeeCoochMenu.Core.Interfaces;
 using CaffeeCoochMenu.Infrastracture.Persictense.Context;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace CaffeeCoochMenu.Infrastracture.Persictense.Services
@@ -13,11 +14,12 @@ namespace CaffeeCoochMenu.Infrastracture.Persictense.Services
             _context = context;
         }
 
-        public async Task AddCategory(string categoryName)
+        public async Task AddCategory(string categoryName, string imageUrl)
         {
             var newCategory = new Category
             {
-                Name = categoryName
+                Name = categoryName,
+                ImageUrl = imageUrl
             };
 
             await _context.Categories.AddAsync(newCategory);

@@ -1,5 +1,4 @@
-﻿
-// Global Variables
+﻿// Global Variables
 let menuItems = [];
 let categories = [];
 let currentCategory = 'all';
@@ -21,18 +20,18 @@ function toggleTheme() {
 }
 
 // Initialize theme from localStorage
-function initTheme() {
-    const savedTheme = localStorage.getItem('theme');
-    const themeIcon = document.getElementById('theme-icon');
+//function initTheme() {
+//    const savedTheme = localStorage.getItem('theme');
+//    const themeIcon = document.getElementById('theme-icon');
 
-    if (savedTheme === 'light') {
-        document.documentElement.classList.remove('dark');
-        themeIcon.textContent = '🌙';
-    } else {
-        document.documentElement.classList.add('dark');
-        themeIcon.textContent = '☀️';
-    }
-}
+//    if (savedTheme === 'light') {
+//        document.documentElement.classList.remove('dark');
+//        themeIcon.textContent = '🌙';
+//    } else {
+//        document.documentElement.classList.add('dark');
+//        themeIcon.textContent = '☀️';
+//    }
+//}
 
 // Show Loading
 function showLoading() {
@@ -43,9 +42,51 @@ function showLoading() {
     document.getElementById('error-message').style.display = 'none';
 }
 
-// Hide Loading
-function hideLoading() {
-    document.getElementById('loading').style.display = 'none';
+function switchCategoryWithoutRefresh(categoryName, element) {
+    // Prevent default link behavior
+    event.preventDefault();
+
+    // Update active tab
+    document.querySelectorAll('.tab-button').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    element.classList.add('active');
+
+    // Update URL without refresh
+    const newUrl = categoryName ? `/${categoryName}` : '/';
+    history.pushState({ category: categoryName }, '', newUrl);
+
+    // Filter products (if you want to handle filtering via JavaScript)
+    filterProductsByCategory(categoryName);
+}
+
+// Function to filter products by category (client-side filtering)
+function filterProductsByCategory(categoryName) {
+    const menuItems = document.querySelectorAll('.menu-item');
+
+    menuItems.forEach(item => {
+        // You'll need to add data attributes to products in the view
+        const productCategory = item.dataset.category;
+
+        if (!categoryName || categoryName === '' || productCategory === categoryName) {
+            item.style.display = 'block';
+        } else {
+            item.style.display = 'none';
+        }
+    });
+
+    // Check if any items are visible
+    const visibleItems = document.querySelectorAll('.menu-item[style="display: block"], .menu-item:not([style*="display: none"])');
+    const emptyState = document.querySelector('.empty-state');
+    const menuGrid = document.querySelector('.menu-grid');
+
+    if (visibleItems.length === 0) {
+        menuGrid.style.display = 'none';
+        emptyState.style.display = 'block';
+    } else {
+        menuGrid.style.display = 'grid';
+        emptyState.style.display = 'none';
+    }
 }
 
 // Show Error
@@ -92,11 +133,11 @@ async function fetchData() {
 function loadDemoData() {
     // Demo categories - replace with your actual category structure
     categories = [
-        { id: 'all', name: 'همه', displayOrder: 0 },
-        { id: 'hot-drinks', name: 'نوشیدنی‌های گرم', displayOrder: 1 },
-        { id: 'cold-drinks', name: 'نوشیدنی‌های سرد', displayOrder: 2 },
-        { id: 'food', name: 'غذا', displayOrder: 3 },
-        { id: 'desserts', name: 'دسر', displayOrder: 4 }
+        { id: 'all', name: 'همه', imageUrl: '/images/categories/all.png', displayOrder: 0 },
+        { id: 'hot-drinks', name: 'نوشیدنی‌های گرم', imageUrl: '/images/categories/hot-drinks.png', displayOrder: 1 },
+        { id: 'cold-drinks', name: 'نوشیدنی‌های سرد', imageUrl: '/images/categories/cold-drinks.png', displayOrder: 2 },
+        { id: 'food', name: 'غذا', imageUrl: '/images/categories/food.png', displayOrder: 3 },
+        { id: 'desserts', name: 'دسر', imageUrl: '/images/categories/desserts.png', displayOrder: 4 }
     ];
 
     // Demo menu items - replace with your actual menu structure
@@ -172,9 +213,8 @@ function loadDemoData() {
 
 // Initialize UI with fetched data
 function initializeUI() {
-    hideLoading();
-    renderCategories();
-    renderMenuItems();
+    //renderCategories();
+    //renderMenuItems();
 }
 
 // Render Categories Tabs
@@ -186,8 +226,10 @@ function renderCategories() {
     const sortedCategories = categories.sort((a, b) => a.displayOrder - b.displayOrder);
 
     tabsContainer.innerHTML = sortedCategories.map(category =>
-        `<button class="tab-button ${category.id === 'all' ? 'active' : ''}"
-        onclick="filterCategory('${category.id}')">${category.name}</button>`
+        `<button class="tab-button ${category.id === 'all' ? 'active' : ''}" onclick="filterCategory('${category.id}')">
+            <img src="${category.imageUrl || '/images/categories/default.png'}" alt="${category.name}" class="category-icon" onerror="this.src='/images/categories/default.png'">
+            <span>${category.name}</span>
+        </button>`
     ).join('');
 
     categoryTabs.style.display = 'block';
@@ -197,18 +239,20 @@ function renderCategories() {
 function createMenuItemHTML(item) {
     // Handle unavailable items
     const unavailableClass = !item.isAvailable ? 'opacity-50' : '';
-    const unavailableText = !item.isAvailable ? '<div class="text-red-500 text-sm mt-1">موقتاً در دسترس نیست</div>' : '';
+    const unavailableText = !item.isAvailable ? '<div class="text-red-500">موقتاً در دسترس نیست</div>' : '';
 
     return `
     <div class="menu-item ${unavailableClass}">
-        <img src="${item.imageUrl || '/images/placeholder.jpg'}" alt="${item.name}" loading="lazy" onerror="this.src='/images/placeholder.jpg'">
+        <div class="menu-item-image-container">
+            <img src="${item.imageUrl || '/images/products/placeholder.jpg'}" alt="${item.name}" loading="lazy" onerror="this.src='/images/products/placeholder.jpg'">
             ${item.isPopular ? '<div class="popular-badge">محبوب</div>' : ''}
-            <div class="menu-item-content">
-                <h3>${item.name}</h3>
-                <p>${item.description}</p>
-                ${unavailableText}
-                <div class="menu-item-price">${item.formattedPrice || formatPrice(item.price)}</div>
-            </div>
+        </div>
+        <div class="menu-item-content">
+            <h3>${item.name}</h3>
+            <p>${item.description}</p>
+            ${unavailableText}
+            <div class="menu-item-price">${item.formattedPrice || formatPrice(item.price)}</div>
+        </div>
     </div>
     `;
 }
@@ -225,7 +269,7 @@ function filterCategory(categoryId) {
     // Update active tab
     const tabs = document.querySelectorAll('.tab-button');
     tabs.forEach(tab => tab.classList.remove('active'));
-    event.target.classList.add('active');
+    event.target.closest('.tab-button').classList.add('active');
 
     renderMenuItems();
 }
@@ -264,7 +308,7 @@ function renderMenuItems() {
 
 // Initialize the page
 function init() {
-    initTheme();
+    //initTheme();
     fetchData(); // This will load data from backend or fallback to demo data
 }
 
